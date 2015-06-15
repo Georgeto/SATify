@@ -22,3 +22,10 @@ def load_signature(file_cnf):
             break
 
     return signature
+
+def load_node_count(file_cnf):
+    with open(file_cnf) as fp:
+        m_count = re.compile('c (\d+)').match(fp.readline())
+        if m_count:
+            return int(m_count.group(1))
+    return -1
