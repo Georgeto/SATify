@@ -205,7 +205,7 @@ def minsat_cnf(file_cnf, ofile_res):
 
         if(result == "SAT"):
             for literal in fp.readline().rstrip('\n').split():
-                if literal[0] != '-':
+                if literal[0] != '-' and literal != '0':
                     node_pos = from_node_alias(int(literal), node_count)
                     position[node_pos[0]] = int(node_pos[1])
             print tuple(x[0] for x in sorted(position.items(), key=operator.itemgetter(1)))
