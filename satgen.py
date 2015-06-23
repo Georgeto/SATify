@@ -10,7 +10,7 @@ def node(n, p):
     return "n" + str(n)+ "_" + str(p)
 
 def node_alias(n, p, c):
-    return str((n-1) * c + p);
+    return str((n-1) * c + p)
 
 def from_node_alias(v, c):
     n = (v // c) + 1
@@ -53,10 +53,9 @@ def satify(file_graph, ofile_sat, ofile_cnf):
                 f.write("!(" + node(n, p1) + " & " + node(n, p2) + ")")
                 if not (n == node_count and p1 == node_count - 1 and p2 == node_count):
                     f.write(" & ")
-    f.write(")\n")
+    f.write(")\n")    
 
     # Verbundenheit und Kreisbedingung
-
     for n in g.nodes():
         f.write("& (")
         neighbors = g.neighbors(n)
@@ -135,33 +134,35 @@ def satify_cnf(file_graph, ofile_cnf):
                     f.write("-" + node_alias(n, p1, node_count) + " -" + node_alias(n, p2, node_count) + " ")
                     end_cnf_line(f)
                     clause_count += 1
-
+        # Jede Position einmal belegt       
+        for p in xrange(1, node_count + 1):
+            for n in xrange(1, node_count + 1):
+                f.write(node_alias(n, p, node_count) + " ")
+            end_cnf_line(f)
+            clause_count += 1
+        
         # Verbundenheit und Kreisbedingung
         # n1_2 -> (n2_3 | n5_3 | n6_3) = !n1_2 | n2_3 | n5_3 | n6_3
         #
         for n in g.nodes():
-            neighbors = g.neighbors(n)
-            if len(neighbors) == 0:
-                continue;
-
             for p in xrange(1, node_count):
                 if p == 1: #Kreisbedingung
                     f.write("-" + node_alias(n, p, node_count) + " ")
-                    for neighbor in neighbors:
-                        f.write(node_alias(neighbor, node_count, node_count) + " ")
+                    for predecessor in g.predecessors(n):
+                        f.write(node_alias(predecessor, node_count, node_count) + " ")
                     end_cnf_line(f)
                     clause_count += 1
 
                 f.write("-" + node_alias(n, p, node_count) + " ")
-                for neighbor in neighbors:
-                    f.write(node_alias(neighbor, p+1, node_count) + " ")
+                for successor in g.successors(n):
+                    f.write(node_alias(successor, p+1, node_count) + " ")
                 end_cnf_line(f)
                 clause_count += 1
 
             if node_count > 1:
                 f.write("-" + node_alias(n, node_count, node_count) + " ")
-                for neighbor in neighbors:
-                    f.write(node_alias(neighbor, 1, node_count) + " ")
+                for successor in g.successors(n):
+                    f.write(node_alias(successor, 1, node_count) + " ")
                 end_cnf_line(f)
                 clause_count += 1
 
@@ -207,7 +208,8 @@ def minsat_cnf(file_cnf, ofile_res):
             for literal in fp.readline().rstrip('\n').split():
                 if literal[0] != '-' and literal != '0':
                     node_pos = from_node_alias(int(literal), node_count)
-                    position[node_pos[0]] = int(node_pos[1])
+                    position[node_pos[0]] = node_pos[1]
+            print position
             print tuple(x[0] for x in sorted(position.items(), key=operator.itemgetter(1)))
             sys.exit(10)
 
