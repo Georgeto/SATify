@@ -9,7 +9,7 @@ def load(s):
     re_stats = re.compile('p\s*edge\s*(\d*)\s*(\d*)')
     re_edge = re.compile('e\s*(\d*)\s*(\d*)')
 
-    g = nx.Graph()
+    g = nx.DiGraph()
 
     while len(lines) > 0:
         line = lines.pop(0)

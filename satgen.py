@@ -145,25 +145,24 @@ def satify_cnf(file_graph, ofile_cnf):
         # n1_2 -> (n2_3 | n5_3 | n6_3) = !n1_2 | n2_3 | n5_3 | n6_3
         #
         for n in g.nodes():
-            neighbors = g.neighbors(n)
             for p in xrange(1, node_count):
                 if p == 1: #Kreisbedingung
                     f.write("-" + node_alias(n, p, node_count) + " ")
-                    for neighbor in neighbors:
-                        f.write(node_alias(neighbor, node_count, node_count) + " ")
+                    for predecessor in g.predecessors(n):
+                        f.write(node_alias(predecessor, node_count, node_count) + " ")
                     end_cnf_line(f)
                     clause_count += 1
 
                 f.write("-" + node_alias(n, p, node_count) + " ")
-                for neighbor in neighbors:
-                    f.write(node_alias(neighbor, p+1, node_count) + " ")
+                for successor in g.successors(n):
+                    f.write(node_alias(successor, p+1, node_count) + " ")
                 end_cnf_line(f)
                 clause_count += 1
 
             if node_count > 1:
                 f.write("-" + node_alias(n, node_count, node_count) + " ")
-                for neighbor in neighbors:
-                    f.write(node_alias(neighbor, 1, node_count) + " ")
+                for successor in g.successors(n):
+                    f.write(node_alias(successor, 1, node_count) + " ")
                 end_cnf_line(f)
                 clause_count += 1
 
