@@ -134,6 +134,7 @@ def satify_cnf(file_graph, ofile_cnf):
                     f.write("-" + node_alias(n, p1, node_count) + " -" + node_alias(n, p2, node_count) + " ")
                     end_cnf_line(f)
                     clause_count += 1
+                    
         # Jede Position einmal belegt       
         for p in xrange(1, node_count + 1):
             for n in xrange(1, node_count + 1):
@@ -202,7 +203,7 @@ def minsat_cnf(file_cnf, ofile_res):
     with open(ofile_res) as fp:
         result = fp.readline().rstrip('\n')
         if(result == "UNSAT"):
-            print "s UNSATISFABLE"
+            print "s UNSATISFIABLE"
             sys.exit(20)
 
         if(result == "SAT"):

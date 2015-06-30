@@ -6,8 +6,8 @@ def load(s):
     lines = s.split('\n')
 
     re_comment = re.compile('c.*')
-    re_stats = re.compile('p\s*edge\s*(\d*)\s*(\d*)')
-    re_edge = re.compile('e\s*(\d*)\s*(\d*)')
+    re_stats = re.compile('p\s+edge\s+(\d+)\s+(\d+)')
+    re_edge = re.compile('e\s+(\d+)\s+(\d+)')
 
     g = nx.DiGraph()
 
